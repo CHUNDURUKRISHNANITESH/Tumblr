@@ -1,6 +1,12 @@
 # OSX
 #
 .DS_Store
+node_modules/
+android/.gradle/
+android/app/build/
+ios/Pods/
+ios/build/
+.env
 
 # Xcode
 #
