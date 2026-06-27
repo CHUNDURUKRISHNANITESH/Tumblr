@@ -6,12 +6,13 @@ import {
     TouchableOpacity,
     StyleSheet,
     Dimensions,
+    Image
 } from 'react-native';
 
 import Toast from 'react-native-toast-message';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 const VerifyOtpScreen = () => {
     const navigation = useNavigation<any>();
@@ -27,7 +28,6 @@ const VerifyOtpScreen = () => {
         updatedOtp[index] = text;
         setOtp(updatedOtp);
 
-        // auto move to next input
         if (text && index < 3) {
             inputs.current[index + 1]?.focus();
         }
@@ -37,10 +37,8 @@ const VerifyOtpScreen = () => {
         if (e.nativeEvent.key === 'Backspace') {
             const updatedOtp = [...otp];
 
-            if (updatedOtp[index] === '') {
-                if (index > 0) {
-                    inputs.current[index - 1]?.focus();
-                }
+            if (updatedOtp[index] === '' && index > 0) {
+                inputs.current[index - 1]?.focus();
             }
 
             updatedOtp[index] = '';
@@ -51,7 +49,6 @@ const VerifyOtpScreen = () => {
     const handleVerifyOTP = () => {
         const enteredOTP = otp.join('');
 
-        //  Empty validation
         if (otp.some(val => val === '')) {
             Toast.show({
                 type: 'error',
@@ -60,7 +57,6 @@ const VerifyOtpScreen = () => {
             return;
         }
 
-        //  Wrong OTP validation
         if (enteredOTP !== '1234') {
             Toast.show({
                 type: 'error',
@@ -69,7 +65,6 @@ const VerifyOtpScreen = () => {
             return;
         }
 
-        //  Success
         Toast.show({
             type: 'success',
             text1: 'OTP Verified Successfully 🎉',
@@ -80,13 +75,17 @@ const VerifyOtpScreen = () => {
 
     return (
         <View style={styles.container}>
+            <Image
+                source={require("../assets/Group.png")}
+                style={styles.topImage}
+            />
+
             <Text style={styles.title}>Verify OTP</Text>
 
             <Text style={styles.subtitle}>
                 Enter OTP sent to {mobile}
             </Text>
 
-            {/* OTP Inputs */}
             <View style={styles.otpContainer}>
                 {otp.map((digit, index) => (
                     <TextInput
@@ -104,7 +103,6 @@ const VerifyOtpScreen = () => {
                 ))}
             </View>
 
-            {/* Verify Button */}
             <TouchableOpacity
                 style={styles.button}
                 onPress={handleVerifyOTP}
@@ -112,7 +110,6 @@ const VerifyOtpScreen = () => {
                 <Text style={styles.buttonText}>VERIFY OTP</Text>
             </TouchableOpacity>
 
-            {/* Resend OTP (UI only) */}
             <TouchableOpacity
                 onPress={() =>
                     Toast.show({
@@ -125,6 +122,11 @@ const VerifyOtpScreen = () => {
                     Resend OTP
                 </Text>
             </TouchableOpacity>
+
+            <Image
+                source={require("../assets/bottomGroup.png")}
+                style={styles.bottomImage}
+            />
         </View>
     );
 };
@@ -134,27 +136,28 @@ export default VerifyOtpScreen;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 20,
+        padding: width * 0.05,
         justifyContent: 'center',
-        backgroundColor: '#fff',
+        backgroundColor: '#E4F3FF',
     },
 
     title: {
-        fontSize: 26,
-        fontWeight: '700',
+        fontSize: width * 0.065,
+        fontFamily: 'Sen-Bold',
         textAlign: 'center',
     },
 
     subtitle: {
         textAlign: 'center',
-        marginTop: 10,
+        marginTop: height * 0.01,
         color: '#666',
+        fontFamily: 'Sen-Regular'
     },
 
     otpContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginTop: 30,
+        marginTop: height * 0.04,
     },
 
     otpBox: {
@@ -163,27 +166,47 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#ccc',
         textAlign: 'center',
-        fontSize: 22,
+        fontSize: width * 0.055,
+        fontFamily: 'Sen-Regular',
         borderRadius: 10,
+        backgroundColor: 'white'
     },
 
     button: {
-        backgroundColor: '#FF6600',
-        padding: 15,
+        backgroundColor: '#004E89',
+        padding: width * 0.04,
         borderRadius: 10,
-        marginTop: 30,
+        marginTop: height * 0.04,
         alignItems: 'center',
     },
 
     buttonText: {
         color: '#fff',
-        fontWeight: '700',
+        fontFamily: 'Sen-Bold'
     },
 
     resendText: {
         textAlign: 'center',
-        marginTop: 20,
-        color: '#FF6600',
-        fontWeight: '600',
+        marginTop: height * 0.02,
+        color: '#004E89',
+        fontFamily: 'Sen-Bold'
+    },
+
+    topImage: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: width,
+        height: height * 0.42,
+        resizeMode: 'cover',
+    },
+
+    bottomImage: {
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        width: width * 0.5,
+        height: height * 0.22,
+        resizeMode: 'cover',
     },
 });

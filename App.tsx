@@ -9,6 +9,7 @@ import Toast from 'react-native-toast-message';
 import VerifyOtpScreen from './src/screens/VerifyOtpScreen';
 import HomeScreen from './src/screens/home/HomeScreen';
 import BottomTabNavigator from './src/navigation/BottomTabNavigator';
+import StoryScreen from './src/screens/StoryScreen';
 
 export type RootStackParamList = {
   Splash: undefined;
@@ -16,7 +17,8 @@ export type RootStackParamList = {
   Signup: undefined;
   VerifyOtp: undefined;
   Home:undefined;
-  BottomTab:undefined
+  BottomTab:undefined;
+  StoryScreen: { username: string, video:string}
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -36,6 +38,7 @@ const App = () => {
         <Stack.Screen name="VerifyOtp" component={VerifyOtpScreen} />
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="BottomTab" component={BottomTabNavigator} />
+        <Stack.Screen name="StoryScreen" component={StoryScreen} />
       </Stack.Navigator>
       <Toast />
     </NavigationContainer>

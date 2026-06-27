@@ -36,14 +36,14 @@ export default SplashScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#111',
+    backgroundColor: '#1A659E',
     justifyContent: 'center',
     alignItems: 'center',
   },
 
   logo: {
     fontSize: width * 0.12,
-    fontWeight: 'bold',
+    fontFamily:'Sen-Bold',
     color: '#fff',
     letterSpacing: 2,
   },

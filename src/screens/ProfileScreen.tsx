@@ -43,9 +43,9 @@ const ProfileScreen = () => {
   const [user, setUser] = useState<User | null>(null);
   const [description, setDescription] = useState('');
   const [isEditing, setIsEditing] = useState(false);
+
   const userKey = 'currentUser';
 
-  // ---------------- LOAD USER ----------------
   useEffect(() => {
     loadUser();
   }, []);
@@ -56,42 +56,30 @@ const ProfileScreen = () => {
       const parsed = JSON.parse(current);
       setUser(parsed);
 
-      const savedDesc = await AsyncStorage.getItem(
-        `desc_${parsed.mobile}`,
-      );
-
-      if (savedDesc) {
-        setDescription(savedDesc);
-      }
+      const savedDesc = await AsyncStorage.getItem(`desc_${parsed.mobile}`);
+      if (savedDesc) setDescription(savedDesc);
     }
   };
 
-  // ---------------- SAVE DESCRIPTION ----------------
   const saveDescription = async () => {
     if (!user) return;
 
-    await AsyncStorage.setItem(
-      `desc_${user.mobile}`,
-      description,
-    );
-
+    await AsyncStorage.setItem(`desc_${user.mobile}`, description);
     setIsEditing(false);
   };
 
-  // ---------------- LOGOUT ----------------
   const handleLogout = async () => {
     await AsyncStorage.removeItem(userKey);
     navigation.replace('Login');
   };
 
-  // ---------------- RENDER GRID ITEM ----------------
   const renderPost = ({ item }: any) => (
     <Image source={{ uri: item.image }} style={styles.gridImage} />
   );
 
   return (
     <View style={styles.container}>
-      {/* PROFILE HEADER */}
+      {/* HEADER */}
       <View style={styles.header}>
         <Image
           source={{
@@ -100,8 +88,8 @@ const ProfileScreen = () => {
           style={styles.profileImage}
         />
 
-        <Text style={styles.name}>{user?.name}</Text>
-        <Text style={styles.username}>@{user?.username}</Text>
+        <Text style={styles.name}>Krishna Nitesh</Text>
+        <Text style={styles.username}>@nitesh.chunduru@gmail.com</Text>
 
         {/* DESCRIPTION */}
         {description.length === 0 && !isEditing ? (
@@ -122,10 +110,7 @@ const ProfileScreen = () => {
                   style={styles.input}
                 />
 
-                <TouchableOpacity
-                  onPress={saveDescription}
-                  style={styles.saveBtn}
-                >
+                <TouchableOpacity onPress={saveDescription} style={styles.saveBtn}>
                   <Text style={styles.saveText}>Save</Text>
                 </TouchableOpacity>
               </>
@@ -136,15 +121,12 @@ const ProfileScreen = () => {
         )}
 
         {/* LOGOUT */}
-        <TouchableOpacity
-          onPress={handleLogout}
-          style={styles.logoutBtn}
-        >
+        <TouchableOpacity onPress={handleLogout} style={styles.logoutBtn}>
           <Text style={styles.logoutText}>Logout</Text>
         </TouchableOpacity>
       </View>
 
-      {/* GRID POSTS */}
+      {/* GRID */}
       <FlatList
         data={staticPosts}
         renderItem={renderPost}
@@ -158,6 +140,8 @@ const ProfileScreen = () => {
 
 export default ProfileScreen;
 
+const GRID_SIZE = width / 3;
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -166,42 +150,46 @@ const styles = StyleSheet.create({
 
   header: {
     alignItems: 'center',
-    paddingVertical: 20,
+    paddingVertical: width * 0.05,
+    marginTop:30
   },
 
   profileImage: {
-    width: 90,
-    height: 90,
-    borderRadius: 45,
+    width: width * 0.22,
+    height: width * 0.22,
+    borderRadius: width * 0.11,
   },
 
   name: {
-    fontSize: 18,
-    fontWeight: '700',
-    marginTop: 10,
+    fontSize: width * 0.045,
+    fontFamily: 'Sen-Bold',
+    marginTop: width * 0.025,
   },
 
   username: {
-    fontSize: 14,
+    fontSize: width * 0.035,
+    fontFamily: 'Sen-Regular',
     color: 'gray',
   },
 
   desc: {
-    marginTop: 10,
-    fontSize: 14,
+    marginTop: width * 0.025,
+    fontSize: width * 0.035,
+    fontFamily: 'Sen-Regular',
     textAlign: 'center',
-    paddingHorizontal: 20,
+    paddingHorizontal: width * 0.05,
   },
 
   addBtn: {
-    marginTop: 10,
-    padding: 8,
+    marginTop: width * 0.02,
+    padding: width * 0.02,
     backgroundColor: '#eee',
     borderRadius: 8,
   },
 
   addText: {
-    fontSize: 14,
+    fontSize: width * 0.035,
+    fontFamily: 'Sen-Regular',
     color: '#333',
   },
 
@@ -209,42 +197,44 @@ const styles = StyleSheet.create({
     width: '80%',
     borderWidth: 1,
     borderColor: '#ccc',
-    marginTop: 10,
-    padding: 8,
+    marginTop: width * 0.025,
+    padding: width * 0.02,
     borderRadius: 8,
+    fontFamily: 'Sen-Regular',
   },
 
   saveBtn: {
-    marginTop: 10,
+    marginTop: width * 0.025,
     backgroundColor: '#000',
-    padding: 10,
+    padding: width * 0.025,
     borderRadius: 8,
   },
 
   saveText: {
     color: '#fff',
+    fontFamily: 'Sen-Regular',
   },
 
   logoutBtn: {
-    marginTop: 15,
-    backgroundColor: 'red',
-    paddingHorizontal: 20,
-    paddingVertical: 8,
+    marginTop: width * 0.04,
+    backgroundColor:'#004E89',
+    paddingHorizontal: width * 0.05,
+    paddingVertical: width * 0.02,
     borderRadius: 8,
   },
 
   logoutText: {
     color: '#fff',
-    fontWeight: '600',
+    fontFamily: 'Sen-Bold',
   },
 
   grid: {
-    padding: 2,
+    padding: width * 0.005,
   },
 
   gridImage: {
-    width: width / 3,
-    height: width / 3,
+    width: GRID_SIZE,
+    height: GRID_SIZE,
     margin: 1,
   },
 });

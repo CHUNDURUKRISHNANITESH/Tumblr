@@ -6,13 +6,15 @@ import {
     TouchableOpacity,
     StyleSheet,
     Dimensions,
+    Image
 } from 'react-native';
 
 import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
+import { StatusBar } from 'react-native';
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 type User = {
     name: string;
@@ -24,7 +26,6 @@ const LoginScreen = () => {
     const navigation = useNavigation<any>();
     const [mobile, setMobile] = useState('');
 
-    //  Validate Mobile Number
     const validateMobile = () => {
         if (!mobile.trim()) {
             Toast.show({
@@ -45,12 +46,10 @@ const LoginScreen = () => {
         return true;
     };
 
-    //  Check user in AsyncStorage
     const checkUserExists = async (mobileNumber: string) => {
         try {
             const users = await AsyncStorage.getItem('users');
             const parsedUsers: User[] = users ? JSON.parse(users) : [];
-
             return parsedUsers.find((u) => u.mobile === mobileNumber);
         } catch (error) {
             console.log(error);
@@ -58,7 +57,6 @@ const LoginScreen = () => {
         }
     };
 
-    // Get OTP Handler
     const handleGetOTP = async () => {
         const isValid = validateMobile();
         if (!isValid) return;
@@ -78,32 +76,45 @@ const LoginScreen = () => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Login</Text>
+            <View style={styles.bg} />
 
-            {/* Mobile Input */}
-            <TextInput
-                placeholder="Enter Mobile Number"
-                keyboardType="number-pad"
-                value={mobile}
-                onChangeText={setMobile}
-                style={styles.input}
-                maxLength={10}
+            <StatusBar backgroundColor="#E4F3FF" barStyle="dark-content" />
+
+            <Image
+                source={require("../assets/Group.png")}
+                style={styles.topImage}
             />
 
-            <View style={styles.buttons}>
-                {/* Get OTP Button */}
-                <TouchableOpacity style={styles.button} onPress={handleGetOTP}>
-                    <Text style={styles.buttonText}>GET OTP</Text>
-                </TouchableOpacity>
+            <View style={styles.content}>
+                <Text style={styles.title}>Login</Text>
 
-                {/* Sign Up Button */}
-                <TouchableOpacity
-                    style={[styles.button, { backgroundColor: '#444' }]}
-                    onPress={() => navigation.navigate('Signup')}
-                >
-                    <Text style={styles.buttonText}>SIGN UP</Text>
-                </TouchableOpacity>
+                <TextInput
+                    placeholder="Enter Mobile Number"
+                    keyboardType="number-pad"
+                    value={mobile}
+                    onChangeText={setMobile}
+                    style={styles.input}
+                    maxLength={10}
+                />
+
+                <View style={styles.buttons}>
+                    <TouchableOpacity style={styles.button} onPress={handleGetOTP}>
+                        <Text style={styles.buttonText}>GET OTP</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        style={[styles.button, { backgroundColor: '#444' }]}
+                        onPress={() => navigation.navigate('Signup')}
+                    >
+                        <Text style={styles.buttonText}>SIGN UP</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
+
+            <Image
+                source={require("../assets/bottomGroup.png")}
+                style={styles.bottomImage}
+            />
         </View>
     );
 };
@@ -111,21 +122,54 @@ const LoginScreen = () => {
 export default LoginScreen;
 
 const styles = StyleSheet.create({
-    buttons:{
-      flexDirection:'row',
-      justifyContent:'space-evenly'
+    bg: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: '#E4F3FF',
     },
+
+    content: {
+        flex: 1,
+        justifyContent: 'center',
+        zIndex: 2,
+    },
+
+    bottomImage: {
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        width: width * 0.5,    
+        height: height * 0.22, 
+        resizeMode: 'cover',
+    },
+
+    topImage: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: width,
+        height: height * 0.42, 
+        resizeMode: 'cover',
+    },
+
+    buttons: {
+        flexDirection: 'row',
+        justifyContent: 'space-evenly'
+    },
+
     container: {
         flex: 1,
         justifyContent: 'center',
-        padding: 20,
-        backgroundColor: '#fff',
+        padding: width * 0.05, 
     },
 
     title: {
         fontSize: width * 0.08,
-        fontWeight: 'bold',
-        marginBottom: 30,
+        fontFamily: 'Sen-Bold',
+        marginBottom: height * 0.035,
         textAlign: 'center',
     },
 
@@ -133,21 +177,23 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#ccc',
         borderRadius: 10,
-        padding: 15,
-        marginBottom: 20,
-        fontSize: 16,
+        padding: width * 0.04,
+        marginBottom: height * 0.025,
+        fontSize: width * 0.04,
+        fontFamily: 'Sen-Regular',
+        backgroundColor: 'white',
     },
 
     button: {
-        backgroundColor: '#FF6600',
-        padding: 17,
+        backgroundColor: '#004E89',
+        padding: width * 0.042,
         borderRadius: 10,
-        marginBottom: 15,
+        marginBottom: height * 0.02,
         alignItems: 'center',
     },
 
     buttonText: {
         color: '#fff',
-        fontWeight: 'bold',
+        fontFamily: 'Sen-Bold'
     },
 });
