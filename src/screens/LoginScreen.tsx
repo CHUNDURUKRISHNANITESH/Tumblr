@@ -77,11 +77,10 @@ const LoginScreen = () => {
     return (
         <View style={styles.container}>
             <View style={styles.bg} />
-
-            <StatusBar backgroundColor="#E4F3FF" barStyle="dark-content" />
-
             <Image
-                source={require("../assets/Group.png")}
+                source={{
+                    uri: 'https://res.cloudinary.com/diazmm0lw/image/upload/v1782594244/Group_trmekl.png',
+                }}
                 style={styles.topImage}
             />
 
@@ -112,9 +111,9 @@ const LoginScreen = () => {
             </View>
 
             <Image
-                source={require("../assets/bottomGroup.png")}
-                style={styles.bottomImage}
-            />
+                source={{
+                    uri: 'https://res.cloudinary.com/diazmm0lw/image/upload/v1782594243/bottomGroup_d3fojj.png',
+                }} style={styles.bottomImage}/>
         </View>
     );
 };
@@ -141,8 +140,8 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: 0,
         left: 0,
-        width: width * 0.5,    
-        height: height * 0.22, 
+        width: width * 0.5,
+        height: height * 0.22,
         resizeMode: 'cover',
     },
 
@@ -151,7 +150,7 @@ const styles = StyleSheet.create({
         top: 0,
         left: 0,
         width: width,
-        height: height * 0.42, 
+        height: height * 0.42,
         resizeMode: 'cover',
     },
 
@@ -163,7 +162,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
-        padding: width * 0.05, 
+        padding: width * 0.05,
     },
 
     title: {

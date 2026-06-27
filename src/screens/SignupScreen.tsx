@@ -138,7 +138,9 @@ const SignupScreen = () => {
   return (
     <View style={styles.container}>
       <Image
-        source={require("../assets/Group.png")}
+        source={{
+          uri: 'https://res.cloudinary.com/diazmm0lw/image/upload/v1782594244/Group_trmekl.png',
+        }}
         style={styles.topImage}
       />
 
@@ -176,9 +178,9 @@ const SignupScreen = () => {
       </Animated.View>
 
       <Image
-        source={require("../assets/bottomGroup.png")}
-        style={styles.bottomImage}
-      />
+        source={{
+          uri: 'https://res.cloudinary.com/diazmm0lw/image/upload/v1782594243/bottomGroup_d3fojj.png',
+        }} style={styles.bottomImage} />
 
     </View>
   );

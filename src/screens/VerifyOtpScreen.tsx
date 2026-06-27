@@ -76,7 +76,9 @@ const VerifyOtpScreen = () => {
     return (
         <View style={styles.container}>
             <Image
-                source={require("../assets/Group.png")}
+                source={{
+                    uri: 'https://res.cloudinary.com/diazmm0lw/image/upload/v1782594244/Group_trmekl.png',
+                }}
                 style={styles.topImage}
             />
 
@@ -124,9 +126,9 @@ const VerifyOtpScreen = () => {
             </TouchableOpacity>
 
             <Image
-                source={require("../assets/bottomGroup.png")}
-                style={styles.bottomImage}
-            />
+                source={{
+                    uri: 'https://res.cloudinary.com/diazmm0lw/image/upload/v1782594243/bottomGroup_d3fojj.png',
+                }} style={styles.bottomImage} />
         </View>
     );
 };
@@ -157,7 +159,7 @@ const styles = StyleSheet.create({
     otpContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginTop: height * 0.04,
+        marginTop: height * 0.02,
     },
 
     otpBox: {
@@ -176,7 +178,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#004E89',
         padding: width * 0.04,
         borderRadius: 10,
-        marginTop: height * 0.04,
+        marginTop: height * 0.03,
         alignItems: 'center',
     },
 
