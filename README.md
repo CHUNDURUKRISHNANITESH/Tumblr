@@ -1,97 +1,148 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# Project Setup and Run Instructions
 
-# Getting Started
+## Prerequisites
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+Before running the project, ensure the following are installed:
 
-## Step 1: Start Metro
+- Node.js (v18 or later recommended)
+- npm
+- React Native CLI
+- Android Studio
+- Android SDK
+- Java Development Kit (JDK 17 recommended)
+- A physical Android device or Android emulator
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+---
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+## Clone the Repository
 
-```sh
-# Using npm
-npm start
-
-# OR using Yarn
-yarn start
+```bash
+git clone https://github.com/CHUNDURUKRISHNANITESH/Tumblr.git
 ```
 
-## Step 2: Build and run your app
+Navigate to the project directory:
 
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
-
-### Android
-
-```sh
-# Using npm
-npm run android
-
-# OR using Yarn
-yarn android
+```bash
+cd Tumblr
 ```
 
-### iOS
+---
 
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
+## Install Dependencies
 
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
+Install all required packages:
 
-```sh
-bundle install
+```bash
+npm install
 ```
 
-Then, and every time you update your native dependencies, run:
+---
 
-```sh
-bundle exec pod install
+## Start Metro Bundler
+
+Start the Metro bundler by running:
+
+```bash
+npx react-native start
 ```
 
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
+Keep this terminal running while testing the debug version of the app.
 
-```sh
-# Using npm
-npm run ios
+---
 
-# OR using Yarn
-yarn ios
+## Run the Application (Android)
+
+Open another terminal and execute:
+
+```bash
+npx react-native run-android
 ```
 
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+---
 
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
+# Generate Debug APK
 
-## Step 3: Modify your app
+To generate a debug APK:
 
-Now that you have successfully run the app, let's make changes!
+```bash
+cd android
+gradlew assembleDebug
+```
 
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
+The generated APK will be available at:
 
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
+```text
+android/app/build/outputs/apk/debug/app-debug.apk
+```
 
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
+Install it on a connected Android device:
 
-## Congratulations! :tada:
+```bash
+adb install -r android/app/build/outputs/apk/debug/app-debug.apk
+```
 
-You've successfully run and modified your React Native App. :partying_face:
+> **Note:** The debug APK requires the Metro Bundler to be running during development.
 
-### Now what?
+---
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
+# Generate Release APK
 
-# Troubleshooting
+To generate a release APK:
 
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+```bash
+cd android
+gradlew assembleRelease
+```
 
-# Learn More
+The generated release APK will be available at:
 
-To learn more about React Native, take a look at the following resources:
+```text
+android/app/build/outputs/apk/release/app-release.apk
+```
 
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+The release APK can be installed on any compatible Android device and **does not require the Metro Bundler**.
+
+---
+
+## Notes
+
+- Enable **USB Debugging** when testing on a physical Android device.
+- For debugging on a physical device, run:
+
+```bash
+adb reverse tcp:8081 tcp:8081
+```
+
+- If native Android files (such as app icons or Gradle configuration) are modified, rebuild the application before testing.
+- The **release APK** is intended for sharing and production testing, while the **debug APK** is intended for development and debugging.
+
+
+## Assumptions Made During Development
+
+* The application is developed and tested primarily for Android devices, as required by the project specification.
+* User account information and profile descriptions are stored using **AsyncStorage** to support multiple users without requiring a backend service.
+* **Cloudinary-hosted images**, posts, stories, and profile data are used throughout the application in accordance with the project requirements.
+* The static OTP (`1234`) is used only for demonstration purposes and does not represent a real authentication system.
+* Cloudinary-hosted video URLs are used only for the Reels feature, along with other media assets used in the application.
+* Like/Unlike interactions for posts and reels are maintained only during the current application session and are not persisted after the application is closed, as specified in the requirements.
+* The application is optimized for portrait orientation to provide a consistent social media user experience.
+* A stable internet connection is assumed for loading Cloudinary-hosted reel videos.
+
+
+## Third-Party Packages Used with a brief reason for each
+
+| Package                                   | Purpose                                                                                         |
+| ----------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| @react-navigation/native                  | Core navigation library used for handling screen navigation in the app.                         |
+| @react-navigation/native-stack            | Provides stack navigation for authentication flow (Splash, Login, Signup, OTP).                 |
+| @react-navigation/bottom-tabs             | Implements bottom tab navigation (Home, Feed, Profile screens).                                 |
+| @react-navigation/stack                   | Additional stack navigation support for complex screen transitions.                             |
+| @react-native-async-storage/async-storage | Used for local data persistence such as user accounts, login session, and profile descriptions. |
+| react-native-gesture-handler              | Enables gesture-based interactions and smooth navigation handling.                              |
+| react-native-safe-area-context            | Ensures UI elements are properly rendered within device safe areas (notches, status bar, etc.). |
+| react-native-screens                      | Optimizes navigation performance by managing native screen components.                          |
+| react-native-video                        | Used for implementing autoplay video playback in the Feed (Reels) screen.                       |
+| react-native-svg                          | Used for rendering vector graphics such as story rings and UI icons.                            |
+| react-native-toast-message                | Displays toast notifications for errors, validations, and user feedback.                        |
+| react-native-vector-icons                 | Provides scalable icons used across the application (heart, comment, share, etc.).              |
+
