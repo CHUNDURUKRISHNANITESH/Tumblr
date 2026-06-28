@@ -33,15 +33,12 @@ const staticPostImages = [
   "https://res.cloudinary.com/diazmm0lw/image/upload/v1782475580/960x0_o1thcv.jpg"
 ];
 
-const staticPosts = staticPostImages.map((image, index) => ({
-  id: (index + 1).toString(),
-  image,
-}));
-
 const ProfileScreen = () => {
   const navigation = useNavigation<any>();
+
   const [user, setUser] = useState<User | null>(null);
   const [description, setDescription] = useState('');
+  const [tempDesc, setTempDesc] = useState('');
   const [isEditing, setIsEditing] = useState(false);
 
   const userKey = 'currentUser';
@@ -52,19 +49,36 @@ const ProfileScreen = () => {
 
   const loadUser = async () => {
     const current = await AsyncStorage.getItem(userKey);
+
     if (current) {
-      const parsed = JSON.parse(current);
+      const parsed: User = JSON.parse(current);
       setUser(parsed);
 
       const savedDesc = await AsyncStorage.getItem(`desc_${parsed.mobile}`);
-      if (savedDesc) setDescription(savedDesc);
+
+      if (savedDesc) {
+        setDescription(savedDesc);
+        setTempDesc(savedDesc);
+      }
     }
+  };
+
+  const staticPosts = staticPostImages.map((image, index) => ({
+    id: (index + 1).toString(),
+    image,
+  }));
+
+  const handleEdit = () => {
+    setTempDesc(description);
+    setIsEditing(true);
   };
 
   const saveDescription = async () => {
     if (!user) return;
 
-    await AsyncStorage.setItem(`desc_${user.mobile}`, description);
+    await AsyncStorage.setItem(`desc_${user.mobile}`, tempDesc);
+
+    setDescription(tempDesc);
     setIsEditing(false);
   };
 
@@ -79,8 +93,11 @@ const ProfileScreen = () => {
 
   return (
     <View style={styles.container}>
+
       {/* HEADER */}
-      <View style={styles.header}>
+      <View style={styles.headerRow}>
+
+        {/* LEFT: Profile Image */}
         <Image
           source={{
             uri: 'https://res.cloudinary.com/diazmm0lw/image/upload/v1782475937/Nitesh_passport_photo_vbcv0h.jpg',
@@ -88,45 +105,66 @@ const ProfileScreen = () => {
           style={styles.profileImage}
         />
 
-        <Text style={styles.name}>Krishna Nitesh</Text>
-        <Text style={styles.username}>@nitesh.chunduru@gmail.com</Text>
+        {/* CENTER: User Info + Description */}
+        <View style={styles.middleSection}>
 
-        {/* DESCRIPTION */}
-        {description.length === 0 && !isEditing ? (
-          <TouchableOpacity
-            onPress={() => setIsEditing(true)}
-            style={styles.addBtn}
-          >
-            <Text style={styles.addText}>Add Description</Text>
-          </TouchableOpacity>
-        ) : (
-          <>
-            {isEditing ? (
-              <>
-                <TextInput
-                  value={description}
-                  onChangeText={setDescription}
-                  placeholder="Enter description"
-                  style={styles.input}
-                />
+          <Text style={styles.name}>
+            {user?.name || 'User'}
+          </Text>
 
-                <TouchableOpacity onPress={saveDescription} style={styles.saveBtn}>
-                  <Text style={styles.saveText}>Save</Text>
+          <Text style={styles.username}>
+            @{user?.username || ''}
+          </Text>
+
+          {/* DESCRIPTION */}
+          {isEditing ? (
+            <>
+              <TextInput
+                value={tempDesc}
+                onChangeText={setTempDesc}
+                placeholder="Enter description"
+                style={styles.input}
+              />
+
+              <TouchableOpacity onPress={saveDescription} style={styles.saveBtn}>
+                <Text style={styles.saveText}>Save</Text>
+              </TouchableOpacity>
+            </>
+          ) : (
+            <>
+              {description ? (
+                <>
+                  <Text style={styles.desc}>{description}</Text>
+
+                  {/* EDIT BUTTON ALWAYS SHOWN WHEN DESCRIPTION EXISTS */}
+                  <TouchableOpacity
+                    onPress={() => {
+                      setTempDesc(description);
+                      setIsEditing(true);
+                    }}
+                    style={styles.addBtn}
+                  >
+                    <Text style={styles.addText}>Edit Description</Text>
+                  </TouchableOpacity>
+                </>
+              ) : (
+                <TouchableOpacity
+                  onPress={() => setIsEditing(true)}
+                  style={styles.addBtn}
+                >
+                  <Text style={styles.addText}>Add Description</Text>
                 </TouchableOpacity>
-              </>
-            ) : (
-              <Text style={styles.desc}>{description}</Text>
-            )}
-          </>
-        )}
+              )}
+            </>
+          )}
+        </View>
 
-        {/* LOGOUT */}
-        <TouchableOpacity onPress={handleLogout} style={styles.logoutBtn}>
+        {/* RIGHT: Logout */}
+        <TouchableOpacity onPress={handleLogout} style={styles.logoutBtnSmall}>
           <Text style={styles.logoutText}>Logout</Text>
         </TouchableOpacity>
-      </View>
 
-      {/* GRID */}
+      </View>
       <FlatList
         data={staticPosts}
         renderItem={renderPost}
@@ -134,15 +172,37 @@ const ProfileScreen = () => {
         numColumns={3}
         contentContainerStyle={styles.grid}
       />
+
     </View>
   );
 };
 
 export default ProfileScreen;
-
 const GRID_SIZE = width / 3;
 
 const styles = StyleSheet.create({
+
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    paddingHorizontal: 15,
+    paddingTop: 20,
+    marginTop: 30
+  },
+
+  middleSection: {
+    flex: 1,
+    marginLeft: 12,
+    marginRight: 10,
+  },
+
+  logoutBtnSmall: {
+    backgroundColor: '#004E89',
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 6,
+  },
+
   container: {
     flex: 1,
     backgroundColor: '#fff',
@@ -151,7 +211,7 @@ const styles = StyleSheet.create({
   header: {
     alignItems: 'center',
     paddingVertical: width * 0.05,
-    marginTop:30
+    marginTop: 30
   },
 
   profileImage: {
@@ -208,16 +268,20 @@ const styles = StyleSheet.create({
     backgroundColor: '#000',
     padding: width * 0.025,
     borderRadius: 8,
+    paddingHorizontal:width*0.005,
+    alignItems:'center',
+    justifyContent:'center'
   },
 
   saveText: {
     color: '#fff',
     fontFamily: 'Sen-Regular',
+    
   },
 
   logoutBtn: {
     marginTop: width * 0.04,
-    backgroundColor:'#004E89',
+    backgroundColor: '#004E89',
     paddingHorizontal: width * 0.05,
     paddingVertical: width * 0.02,
     borderRadius: 8,
@@ -229,6 +293,7 @@ const styles = StyleSheet.create({
   },
 
   grid: {
+    marginTop:40,
     padding: width * 0.005,
   },
 

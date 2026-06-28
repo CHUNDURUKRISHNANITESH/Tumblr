@@ -71,6 +71,12 @@ const LoginScreen = () => {
             return;
         }
 
+        // 🔥 IMPORTANT FIX: set current logged-in user
+        await AsyncStorage.setItem(
+            'currentUser',
+            JSON.stringify(user)
+        );
+
         navigation.navigate('VerifyOtp', { mobile });
     };
 
@@ -113,7 +119,7 @@ const LoginScreen = () => {
             <Image
                 source={{
                     uri: 'https://res.cloudinary.com/diazmm0lw/image/upload/v1782594243/bottomGroup_d3fojj.png',
-                }} style={styles.bottomImage}/>
+                }} style={styles.bottomImage} />
         </View>
     );
 };
