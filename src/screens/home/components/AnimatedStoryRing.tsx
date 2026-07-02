@@ -11,11 +11,6 @@ type Props = {
 
 const { width, height } = Dimensions.get('window');
 
-/**
- * Responsive scaling (better than raw Dimensions scaling)
- * - Prevents oversized UI on tablets
- * - Keeps consistency across densities
- */
 const guidelineBaseWidth = 375;
 
 const scale = (size: number) => {

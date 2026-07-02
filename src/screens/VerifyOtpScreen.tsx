@@ -67,7 +67,7 @@ const VerifyOtpScreen = () => {
 
         Toast.show({
             type: 'success',
-            text1: 'OTP Verified Successfully 🎉',
+            text1: 'OTP Verified Successfully',
         });
 
         navigation.replace('BottomTab');

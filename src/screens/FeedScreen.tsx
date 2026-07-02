@@ -1,3 +1,4 @@
+import 'react-native-gesture-handler';
 import React, { useRef, useState, useEffect } from 'react';
 import {
   View,
@@ -6,13 +7,16 @@ import {
   Dimensions,
   StyleSheet,
   TouchableOpacity,
-  Modal,
-  BackHandler,
 } from 'react-native';
 
 import Video from 'react-native-video';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { useIsFocused } from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
+import {
+  BottomSheetScrollView
+} from '@gorhom/bottom-sheet';
+import BottomSheet from '@gorhom/bottom-sheet';
+//import { useLayoutEffect } from 'react';
 
 const { height, width } = Dimensions.get('window');
 
@@ -40,31 +44,16 @@ const commentsData = [
 const FeedScreen = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [likedReels, setLikedReels] = useState<string[]>([]);
-  const [showComments, setShowComments] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
-
+  const bottomSheetRef = useRef<BottomSheet>(null);
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const snapPoints = React.useMemo(() => ['50%'], []);
   const isFocused = useIsFocused();
-
   const viewConfigRef = useRef({
     itemVisiblePercentThreshold: 80,
   });
-
-  useEffect(() => {
-    const backAction = () => {
-      if (showComments) {
-        setShowComments(false);
-        return true;
-      }
-      return false;
-    };
-
-    const backHandler = BackHandler.addEventListener(
-      'hardwareBackPress',
-      backAction
-    );
-
-    return () => backHandler.remove();
-  }, [showComments]);
+  const navigation = useNavigation();
+  const tabNavigation = navigation.getParent('MainTabs');
 
   const onViewableItemsChanged = useRef(({ viewableItems }: any) => {
     if (viewableItems.length > 0) {
@@ -80,9 +69,50 @@ const FeedScreen = () => {
     );
   };
 
-  const openComments = () => setShowComments(true);
-  const closeComments = () => setShowComments(false);
+  // useLayoutEffect(() => {
+  //   navigation.getParent('MainTabs')?.setOptions({
+  //     tabBarStyle: isSheetOpen
+  //       ? { display: 'none' }
+  //       : styles.tabBarStyle,
+  //   });
+  // }, [navigation, isSheetOpen]);
+
+  // useEffect(() => {
+  //   navigation.getParent()?.setOptions({
+  //     tabBarStyle: isSheetOpen
+  //       ? { display: 'none' }
+  //       : styles.tabBarStyle,
+  //   });
+  // }, [isSheetOpen]);
+
+  const openComments = () => {
+    navigation.getParent('MainTabs')?.setOptions({
+      tabBarStyle: { display: 'none' },
+    });
+    bottomSheetRef.current?.expand();
+  };
+
+  const closeComments = () => {
+    navigation.getParent('MainTabs')?.setOptions({
+      tabBarStyle: styles.tabBarStyle,
+    });
+    bottomSheetRef.current?.close();
+  };
   const togglePlayPause = () => setIsPaused(prev => !prev);
+
+  const handleSheetChange = (index: number) => {
+    console.log('Sheet index:', index);
+    const opened = index !== -1;
+
+    navigation.getParent('MainTabs')?.setOptions({
+      tabBarStyle: opened
+        ? { display: 'none' }
+        : styles.tabBarStyle,
+    });
+
+    setIsSheetOpen(opened);
+    setIsPaused(opened);
+  };
 
   const renderItem = ({ item, index }: any) => {
     const isActive = index === activeIndex;
@@ -93,7 +123,7 @@ const FeedScreen = () => {
         <TouchableOpacity
           activeOpacity={1}
           onPress={() => {
-            if (showComments) {
+            if (isSheetOpen) {
               closeComments();
             } else {
               togglePlayPause();
@@ -143,7 +173,7 @@ const FeedScreen = () => {
             <Ionicons name="share-social-outline" size={width * 0.075} color="white" />
           </View>
         </View>
-      </View>
+      </View >
     );
   };
 
@@ -161,34 +191,68 @@ const FeedScreen = () => {
         viewabilityConfig={viewConfigRef.current}
       />
 
-      {/* COMMENTS MODAL */}
-      <Modal
-        visible={showComments}
-        animationType="slide"
-        transparent
-        onRequestClose={closeComments}
+      <BottomSheet
+        ref={bottomSheetRef}
+        index={-1}
+        bottomInset={0}
+        snapPoints={snapPoints}
+        enablePanDownToClose={true}
+        backgroundStyle={{ backgroundColor: '#111' }}
+        handleIndicatorStyle={{ backgroundColor: '#666', width: 40 }}
+        onChange={handleSheetChange}
+
+        // ref={bottomSheetRef}
+        // index={-1}
+        // snapPoints={snapPoints}
+        // enablePanDownToClose={true}
+        // backgroundStyle={{
+        //   backgroundColor: '#111',
+        // }}
+        // handleIndicatorStyle={{
+        //   backgroundColor: '#666',
+        //   width: 40,
+        // }}
+        // onChange={(index) => {
+        //   const opened = index !== -1;
+  
+        //   setIsSheetOpen(opened);
+        //   setIsPaused(opened);
+  
+        //   navigation.getParent()?.setOptions({
+        //     tabBarStyle: opened
+        //       ? { display: 'none' }
+        //       : styles.tabBarStyle,
+        //   });
+        // }}
       >
-        <View style={styles.modalOverlay}>
-          <TouchableOpacity
-            style={{ flex: 1 }}
-            activeOpacity={1}
-            onPress={closeComments}
-          />
+        <BottomSheetScrollView style={styles.sheet}>
+          <Text style={styles.sheetTitle}>
+            Comments
+          </Text>
 
-          <View style={styles.sheet}>
-            <Text style={styles.sheetTitle}>Comments</Text>
+          {commentsData.map(c => (
+            <View
+              key={c.id}
+              style={{
+                marginBottom: width * 0.03,
+              }}
+            >
+              <Text
+                style={{
+                  color: 'white',
+                  fontWeight: 'bold',
+                }}
+              >
+                {c.user}
+              </Text>
 
-            {commentsData.map(c => (
-              <View key={c.id} style={{ marginBottom: width * 0.03 }}>
-                <Text style={{ color: 'white', fontWeight: 'bold' }}>
-                  {c.user}
-                </Text>
-                <Text style={{ color: '#ccc' }}>{c.text}</Text>
-              </View>
-            ))}
-          </View>
-        </View>
-      </Modal>
+              <Text style={{ color: '#ccc' }}>
+                {c.text}
+              </Text>
+            </View>
+          ))}
+        </BottomSheetScrollView>
+      </BottomSheet>
     </View>
   );
 };
@@ -196,6 +260,17 @@ const FeedScreen = () => {
 export default FeedScreen;
 
 const styles = StyleSheet.create({
+  tabBarStyle: {
+    position: 'absolute',
+    left: width * 0.03,
+    right: width * 0.03,
+    height: width * 0.25,
+    borderRadius: 15,
+    backgroundColor: '#fff',
+    elevation: 5,
+    paddingBottom: width * 0.02,
+    paddingTop: width * 0.01,
+  },
   reelContainer: {
     height,
     width,
@@ -236,19 +311,18 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 
-  modalOverlay: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    backgroundColor: 'rgba(0,0,0,0.3)',
-  },
-
   sheet: {
-    height: height * 0.5,
-    backgroundColor: '#111',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
+    flex: 1,
     padding: width * 0.04,
   },
+
+  // sheet: {
+  //   height: height * 0.5,
+  //   backgroundColor: '#111',
+  //   borderTopLeftRadius: 20,
+  //   borderTopRightRadius: 20,
+  //   padding: width * 0.04,
+  // },
 
   sheetTitle: {
     color: 'white',

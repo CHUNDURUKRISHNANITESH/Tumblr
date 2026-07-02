@@ -72,14 +72,14 @@ const styles = StyleSheet.create({
     },
 
     image: {
-        width: width * 0.145, 
+        width: width * 0.145,
         height: width * 0.145,
         borderRadius: width * 0.0725,
     },
 
     text: {
         marginTop: width * 0.015,
-        fontSize: width * 0.03, 
+        fontSize: width * 0.03,
         fontFamily: 'Sen-Regular',
         maxWidth: width * 0.18,
     },

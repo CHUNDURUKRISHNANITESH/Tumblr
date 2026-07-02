@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
 
   logo: {
     fontSize: width * 0.12,
-    fontFamily:'Sen-Bold',
+    fontFamily: 'Sen-Bold',
     color: '#fff',
     letterSpacing: 2,
   },

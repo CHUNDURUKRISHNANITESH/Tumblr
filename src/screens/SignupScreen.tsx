@@ -103,19 +103,19 @@ const SignupScreen = () => {
     };
 
     try {
-      // 2. GET OLD USERS
+      // GET OLD USERS
       const users = await getUsers();
 
-      // 3. UPDATE USER LIST
+      // UPDATE USER LIST
       const updatedUsers = [...users, newUser];
       await AsyncStorage.setItem('users', JSON.stringify(updatedUsers));
 
-      // 4. SAVE CURRENT LOGGED IN USER (IMPORTANT FIX)
+      // SAVE CURRENT LOGGED IN USER (IMPORTANT FIX)
       await AsyncStorage.setItem('currentUser', JSON.stringify(newUser));
 
       Toast.show({
         type: 'success',
-        text1: 'User registered successfully 🎉',
+        text1: 'User registered successfully',
       });
 
       navigation.goBack();

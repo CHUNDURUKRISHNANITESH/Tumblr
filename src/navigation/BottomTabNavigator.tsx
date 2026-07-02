@@ -20,6 +20,7 @@ const Tab = createBottomTabNavigator<BottomTabParamList>();
 const BottomTabNavigator = () => {
     return (
         <Tab.Navigator
+            id="MainTabs"
             screenOptions={({ route }) => ({
                 headerShown: false,
                 tabBarActiveTintColor: '#004E89',
